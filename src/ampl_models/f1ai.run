@@ -1,0 +1,7 @@
+reset;
+option solver gurobi;
+model f1ai.mod;
+data f1ai.dat;
+solve;
+display compound;
+display time;

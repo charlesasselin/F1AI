@@ -1,1 +1,3 @@
-from decision.py import Decision
+from racingdata import RacingData
+
+inst = RacingData()
