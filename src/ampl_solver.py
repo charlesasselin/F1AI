@@ -1,5 +1,6 @@
 from solver import Solver
 import amplpy
+import os
 
 
 class AmplSolver(Solver):
@@ -30,7 +31,7 @@ class AmplSolver(Solver):
 
         laps = amplpy.DataFrame('laps')
         laps.setColumn('laps', laps)
-        ampl.setData(A, 'laps')
+        ampl.setData(laps, 'laps')
 
         df = amplpy.DataFrame(('tyres', 'laps'), 'time')
 
@@ -45,20 +46,16 @@ class AmplSolver(Solver):
 
         compound = ampl.getVariable('compound')
         dfy = compound.getValues()
-
+        print(compound)
         chosen = {int(row[0]): int(row[1]) for row in dfy if row[3] == 1}
 
         x = ampl.getParameter('X')
         dfx = x.getValues()
-        dist_list = []
+        pitScenario = []
         for row in dfx:
             for i in chosen:
                 to_append = [row[2]]
                 if i == (row[0], row[1]):
                     dist_list.append(to_append)
 
-        solution = Route(racingdata)
-
-        solution.visit_sequence = generate_order(laps, chosen)
-
-        return solution
+        print()
