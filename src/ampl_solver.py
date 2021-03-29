@@ -22,40 +22,47 @@ class AmplSolver(Solver):
         model_dir = os.path.normpath('./ampl_models')
         ampl.read(os.path.join(model_dir, 'f1ai.mod'))
 
-        nb_locations = racingdata.count_locations()
-        laps = list(range(1, nb_locations+1))
+        nb_laps = racingdata.get_nb_laps()
 
-        tyres = amplpy.DataFrame('tyres')
-        tyres.setColumn('tyres', tyres)
-        ampl.setData(tyres, 'tyres')
+        listLaps = list(range(1, nb_laps+1))
+        listWear = list(range(1, 6))
+        listTyres = list(range(1, 4))
 
-        laps = amplpy.DataFrame('laps')
-        laps.setColumn('laps', laps)
-        ampl.setData(laps, 'laps')
+        dfTyres = amplpy.DataFrame('tyres')
+        dfTyres.setColumn('tyres', listTyres)
+        ampl.setData(dfTyres, 'tyres')
 
-        df = amplpy.DataFrame(('tyres', 'laps'), 'time')
+        dfWear = amplpy.DataFrame('stints')
+        dfWear.setColumn('stints', listWear)
+        ampl.setData(dfWear, 'stints')
+
+        dfLaps = amplpy.DataFrame('laps')
+        dfLaps.setColumn('laps', listLaps)
+        ampl.setData(dfLaps, 'laps')
+
+        df = amplpy.DataFrame(('tyres', 'wear'), 'time')
+
+        print(listTyres)
+        print(listWear)
 
         df.setValues({
-            (start, end): racingdata.projected_times[i][j]
-            for i, start in enumerate(laps)
-            for j, end in enumerate(laps)})
-        # print(df)
+            (tyre, wear): racingdata.lapData[i][j]
+            for i, tyre in enumerate(listTyres)
+            for j, wear in enumerate(listWear)})
+        print(df)
 
         ampl.setData(df)
         ampl.solve()
 
         compound = ampl.getVariable('compound')
         dfy = compound.getValues()
-        print(compound)
+        print(dfy)
         chosen = {int(row[0]): int(row[1]) for row in dfy if row[3] == 1}
+        print(chosen)
 
-        x = ampl.getParameter('X')
-        dfx = x.getValues()
         pitScenario = []
-        for row in dfx:
-            for i in chosen:
-                to_append = [row[2]]
-                if i == (row[0], row[1]):
-                    dist_list.append(to_append)
-
-        print()
+        # for row in dfx:
+        #     for i in chosen:
+        #         to_append = [row[2]]
+        #         if i == (row[0], row[1]):
+        #             dist_list.append(to_append)
