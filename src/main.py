@@ -4,6 +4,7 @@ Listen to telemetry packets and print them to standard output
 import socket
 from racingdata import RacingData
 from ampl_solver import AmplSolver
+from decision import Decision
 
 data = [[115, 116, 117, 118, 119],
         [116, 117, 118, 119, 120],
@@ -25,3 +26,4 @@ from f1_2020_telemetry.packets import unpack_udp_packet
 racing_inst = RacingData(data)
 print(racing_inst)
 racing_sol = AmplSolver().solve(racing_inst)
+print(racing_sol)
