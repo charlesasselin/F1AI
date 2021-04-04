@@ -10,9 +10,9 @@ minimize z: sum{c in tyres, s in stints, l in laps} time[c,s] * compound[c,s,l] 
 subject to GottaLap {l in laps}: sum{c in tyres, s in stints} compound[c,s,l] = 1;
 subject to StartRace: sum{c in tyres} compound[c,1,1] = 1;
 subject to UniqueLap {c in tyres, s in stints}: sum{l in laps} compound[c,s,l] <= 1;
-subject to PitStop{c in tyres, l in laps, b in 1..10}: pit[c,b] >= sum{s in stints} compound[c,s,b] - sum{s in stints} compound[c,s,b+1];
+subject to PitStop{c in tyres, l in laps, b in 1..30}: pit[c,b] >= sum{s in stints} compound[c,s,b] - sum{s in stints} compound[c,s,b+1];
 subject to PitRestrictions: sum{c in tyres, l in laps} pit[c,l] >= 1;
-subject to TrackEvolution {c in tyres, a in 1..4, b in 1..10}: compound[c,a+1,b+1] <= 999 * compound[c,a,b];
+subject to TrackEvolution {c in tyres, a in 1..18, b in 1..30}: compound[c,a+1,b+1] <= 999 * compound[c,a,b];
 
 
 

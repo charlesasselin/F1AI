@@ -25,8 +25,9 @@ class AmplSolver(Solver):
 
         nb_laps = racingData.get_nb_laps()
 
+
         listLaps = list(range(1, nb_laps+1))
-        listWear = list(range(1, 6))
+        listWear = list(range(1, (min(len(racingData.lapData[0]), len(racingData.lapData[1]), len(racingData.lapData[2])))))
         listTyres = racingData.compound2021()
 
         dfTyres = amplpy.DataFrame('tyres')
@@ -61,7 +62,7 @@ class AmplSolver(Solver):
 
         compound = ampl.getVariable('compound')
         dfCompound = compound.getValues()
-        chosen = {int(row[2]): row[0] for row in dfCompound if row[3] == 1}
+        chosen = {int(row[2]): [row[0], int(row[1])] for row in dfCompound if row[3] == 1}
         solution.compoundStrategy = chosen
 
         return solution

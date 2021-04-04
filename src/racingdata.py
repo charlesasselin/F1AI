@@ -19,7 +19,7 @@ class RacingData(Data):
 
     def get_nb_laps(self):
         #return f1.PacketSessionData_V1._fields_[5] # ('Total Laps', int)
-        imola = 11
+        imola = 31
         return imola
 
     def compound2021(self):
