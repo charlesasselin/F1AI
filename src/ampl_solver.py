@@ -51,23 +51,17 @@ class AmplSolver(Solver):
         ampl.setData(df)
         ampl.solve()
 
-        compound = ampl.getVariable('compound')
-        dfy = compound.getValues()
+        solution = Decision(racingData)
 
         pit = ampl.getVariable('pit')
         dfPit = pit.getValues()
         chosen = {int(row[1]): row[0] for row in dfPit if row[2] == 1}
 
-        solution = Decision(racingData)
         solution.pitDecision = chosen
 
+        compound = ampl.getVariable('compound')
+        dfCompound = compound.getValues()
+        chosen = {int(row[2]): row[0] for row in dfCompound if row[3] == 1}
+        solution.compoundStrategy = chosen
+
         return solution
-
-
-
-        #pitScenario = []
-        # for row in dfx:
-        #     for i in chosen:
-        #         to_append = [row[2]]
-        #         if i == (row[0], row[1]):
-        #             dist_list.append(to_append)

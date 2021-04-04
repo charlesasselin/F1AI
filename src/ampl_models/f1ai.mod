@@ -7,8 +7,6 @@ var pit {c in tyres, l in laps} binary;
 
 minimize z: sum{c in tyres, s in stints, l in laps} time[c,s] * compound[c,s,l] + sum{c in tyres, l in laps} 20 * pit[c,l];
 
-
-
 subject to GottaLap {l in laps}: sum{c in tyres, s in stints} compound[c,s,l] = 1;
 subject to StartRace: sum{c in tyres} compound[c,1,1] = 1;
 subject to UniqueLap {c in tyres, s in stints}: sum{l in laps} compound[c,s,l] <= 1;
