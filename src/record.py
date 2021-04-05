@@ -1,9 +1,8 @@
-from f1_2020_telemetry.packets import PacketID, unpack_udp_packet
+from f1_2020_telemetry.packets import unpack_udp_packet
 from f1_2020_telemetry import packets as f1packets
 import socket
-import math
 from dataclasses import dataclass
-from typing import List, Dict, Optional
+
 
 @dataclass
 class LapTime:
@@ -12,7 +11,7 @@ class LapTime:
     def __repr__(self):
         return self.minutes
 
-    def getSeconds(self):
+    def getseconds(self):
         return self.seconds
 
     @property
@@ -25,10 +24,10 @@ class Tyre:
     compound: int
 
     def __repr__(self):
-        return self.tyreType
+        return self.tyretype
 
     @property
-    def tyreType(self):
+    def tyretype(self):
         if self.compound == 16:
             return 'C5'
         elif self.compound == 17:
@@ -41,50 +40,49 @@ class Tyre:
             return 'C1'
 
 
-info = [LapTime, Tyre]
+if __name__ == "__main__":
 
-udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-udp_socket.bind(("0.0.0.0", 20777))
+    udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp_socket.bind(("0.0.0.0", 20777))
 
-lapTimes = {}
-listLapTimes = []
-lapCompound = {}
-file1 = open("lapData", "a")
-current_lap = 0
+    lapTimes = {}
+    listLapTimes = []
+    lapCompound = {}
+    file1 = open("lapData", "a")
+    current_lap = 0
 
-while True:
+    while True:
 
-    udp_packet = udp_socket.recv(2048)
-    packet = unpack_udp_packet(udp_packet)
-    attribute = packet.header
+        udp_packet = udp_socket.recv(2048)
+        packet = unpack_udp_packet(udp_packet)
+        attribute = packet.header
 
-    # frame = attribute.frameIdentifier
-    player_car = attribute.playerCarIndex
-    # current_frame_data[PacketID(attribute.packetId)] = packet
+        # frame = attribute.frameIdentifier
+        player_car = attribute.playerCarIndex
+        # current_frame_data[PacketID(attribute.packetId)] = packet
 
+        if isinstance(packet, f1packets.PacketLapData_V1):
+            lapData = packet.lapData[player_car]
+            lastLapNum = lapData.currentLapNum - 1
+            if lastLapNum not in lapTimes.keys():
+                current_lap = lastLapNum + 1
+                lapTimes[lastLapNum] = LapTime(seconds=lapData.lastLapTime)
+                listLapTimes.append(LapTime(seconds=lapData.lastLapTime).getseconds())
+                totalLaps = f1packets.PacketSessionData_V1.totalLaps
+                file1.write(f'{listLapTimes}\n')
+                print(lapTimes)
+        elif isinstance(packet, f1packets.PacketSessionData_V1):
+            pass
+        elif isinstance(packet, f1packets.PacketCarStatusData_V1):
+            if current_lap - 1 not in lapCompound.keys():
+                carStatusData = packet.carStatusData[player_car]
+                lapCompound[current_lap-1] = Tyre(compound=carStatusData.actualTyreCompound)
+                file1.write(f'{lapCompound}\n')
+                print(lapCompound)
 
-    if isinstance(packet, f1packets.PacketLapData_V1):
-        lapData = packet.lapData[player_car]
-        lastLapNum = lapData.currentLapNum - 1
-        if lastLapNum not in lapTimes.keys():
-            current_lap = lastLapNum + 1
-            lapTimes[lastLapNum] = LapTime(seconds=lapData.lastLapTime)
-            listLapTimes.append(LapTime(seconds=lapData.lastLapTime).getSeconds())
-            totalLaps = f1packets.PacketSessionData_V1.totalLaps
-            file1.write(f'{listLapTimes}\n')
-            print(lapTimes)
-    elif isinstance(packet, f1packets.PacketSessionData_V1):
-        pass
-    elif isinstance(packet, f1packets.PacketCarStatusData_V1):
-        if current_lap - 1 not in lapCompound.keys():
-            carStatusData = packet.carStatusData[player_car]
-            lapCompound[current_lap-1] = Tyre(compound=carStatusData.actualTyreCompound)
-            file1.write(f'{lapCompound}\n')
-            print(lapCompound)
+        else:
+            pass
 
-    else:
-        pass
-
-        # distance = current_frame_data[PacketID.LAP_DATA].lapData[player_car].totalDistance # THIS WORKS
-        # lap = current_frame_data[PacketID.SESSION]  # THIS DOES NOT WORK HOW DO I ACCESS totalLaps?
-        # print("Received:", frame, player_car, distance, lap)
+            # distance = current_frame_data[PacketID.LAP_DATA].lapData[player_car].totalDistance # THIS WORKS
+            # lap = current_frame_data[PacketID.SESSION]  # THIS DOES NOT WORK HOW DO I ACCESS totalLaps?
+            # print("Received:", frame, player_car, distance, lap)

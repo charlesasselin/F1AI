@@ -8,7 +8,8 @@ class AmplSolver(Solver):
     def __init__(self):
         super(AmplSolver, self).__init__()
 
-    def solve(self, racingData):
+    @staticmethod
+    def solve(racingdata):
         ampl_env = amplpy.Environment()
         ampl = amplpy.AMPL(ampl_env)
 
@@ -23,55 +24,57 @@ class AmplSolver(Solver):
         model_dir = os.path.normpath('./ampl_models')
         ampl.read(os.path.join(model_dir, 'f1ai.mod'))
 
-        nb_laps = racingData.get_nb_laps()
+        nb_laps = racingdata.get_nb_laps()
 
+        listlaps = list(range(1, nb_laps+1))
+        listwear = list(range(1, (min(len(racingdata.lapData[0]),
+                                      len(racingdata.lapData[1]),
+                                      len(racingdata.lapData[2]))
+                                  )))
+        listtyres = racingdata.compound2021()
 
-        listLaps = list(range(1, nb_laps+1))
-        listWear = list(range(1, (min(len(racingData.lapData[0]), len(racingData.lapData[1]), len(racingData.lapData[2])))))
-        listTyres = racingData.compound2021()
+        dftyres = amplpy.DataFrame('tyres')
+        dftyres.setColumn('tyres', listtyres)
+        ampl.setData(dftyres, 'tyres')
 
-        dfTyres = amplpy.DataFrame('tyres')
-        dfTyres.setColumn('tyres', listTyres)
-        ampl.setData(dfTyres, 'tyres')
+        dfwear = amplpy.DataFrame('stints')
+        dfwear.setColumn('stints', listwear)
+        ampl.setData(dfwear, 'stints')
 
-        dfWear = amplpy.DataFrame('stints')
-        dfWear.setColumn('stints', listWear)
-        ampl.setData(dfWear, 'stints')
+        dflaps = amplpy.DataFrame('laps')
+        dflaps.setColumn('laps', listlaps)
+        ampl.setData(dflaps, 'laps')
 
-        dfLaps = amplpy.DataFrame('laps')
-        dfLaps.setColumn('laps', listLaps)
-        ampl.setData(dfLaps, 'laps')
+        totallaps = ampl.getParameter('totalLaps')
+        totallaps.set(nb_laps)
 
-        totalLaps = ampl.getParameter('totalLaps')
-        totalLaps.set(nb_laps)
+        tyrelifespan = ampl.getParameter('tyreLifeSpan')
+        tyrelifespan.set(len(listwear))
 
-        tyreLifeSpan = ampl.getParameter('tyreLifeSpan')
-        tyreLifeSpan.set(len(listWear))
-
-        pitTime = ampl.getParameter('pitTime')
-        pitTime.set(racingData.pitTime)
+        pittime = ampl.getParameter('pitTime')
+        pittime.set(racingdata.pitTime)
 
         df = amplpy.DataFrame(('tyres', 'wear'), 'time')
 
         df.setValues({
-            (tyre, wear): racingData.lapData[i][j]
-            for i, tyre in enumerate(listTyres)
-            for j, wear in enumerate(listWear)})
+            (tyre, wear): racingdata.lapData[i][j]
+            for i, tyre in enumerate(listtyres)
+            for j, wear in enumerate(listwear)})
 
         ampl.setData(df)
         ampl.solve()
 
-        solution = Decision(racingData)
+        solution = Decision(racingdata)
 
         pit = ampl.getVariable('pit')
-        dfPit = pit.getValues()
-        chosen = {int(row[1]): row[0] for row in dfPit if row[2] == 1}
+        dfpit = pit.getValues()
+        chosen = {int(row[1]): row[0] for row in dfpit if row[2] == 1}
 
         solution.pitDecision = chosen
 
         compound = ampl.getVariable('compound')
-        dfCompound = compound.getValues()
-        chosen = {int(row[2]): [row[0], int(row[1])] for row in dfCompound if row[3] == 1}
+        dfcompound = compound.getValues()
+        chosen = {int(row[2]): [row[0], int(row[1])] for row in dfcompound if row[3] == 1}
         solution.compoundStrategy = chosen
 
         return solution

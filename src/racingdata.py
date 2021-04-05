@@ -8,8 +8,8 @@ class RacingData(Data):
     def __init__(self, lapData):
         super(RacingData, self).__init__()
         self.lapData = lapData
-        self.gpTitle = "Imola Grand Prix"
-        self.pitTime = 20
+        self.gpTitle = "Austria Spielberg Grand Prix"
+        self.pitTime = 17
 
     def __str__(self):
         tmp_str = ''
@@ -20,7 +20,7 @@ class RacingData(Data):
 
     def get_nb_laps(self):
         #return f1.PacketSessionData_V1._fields_[5] # ('Total Laps', int)
-        imola = 31
+        imola = 50
         return imola
 
     def compound2021(self):
