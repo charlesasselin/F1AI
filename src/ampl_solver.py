@@ -42,6 +42,15 @@ class AmplSolver(Solver):
         dfLaps.setColumn('laps', listLaps)
         ampl.setData(dfLaps, 'laps')
 
+        totalLaps = ampl.getParameter('totalLaps')
+        totalLaps.set(nb_laps)
+
+        tyreLifeSpan = ampl.getParameter('tyreLifeSpan')
+        tyreLifeSpan.set(len(listWear))
+
+        pitTime = ampl.getParameter('pitTime')
+        pitTime.set(racingData.pitTime)
+
         df = amplpy.DataFrame(('tyres', 'wear'), 'time')
 
         df.setValues({

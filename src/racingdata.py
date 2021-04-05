@@ -9,6 +9,7 @@ class RacingData(Data):
         super(RacingData, self).__init__()
         self.lapData = lapData
         self.gpTitle = "Imola Grand Prix"
+        self.pitTime = 20
 
     def __str__(self):
         tmp_str = ''

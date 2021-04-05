@@ -10,7 +10,10 @@ class Decision(Solution):
         self.compoundStrategy = {}
 
     def __str__(self):
-        decision_str = f"Lance, the pit strategy for this {self.gpTitle} is the following: {self.pitDecision} \n"\
-                       f"We will start on a fresh set of {self.compoundStrategy.get(1)} \n"\
-                       f"Here is the matrix: {dict(sorted(self.compoundStrategy.items()))}"
+        pitLaps = list(self.pitDecision.keys())
+        decision_str = f"\nLance, the pit strategy for this {self.gpTitle}" \
+                       f"is the following: first pit is at lap {pitLaps[0]} " \
+                       f"on a {self.compoundStrategy.get(pitLaps[0]+1)[0]} compound\n"\
+                       f"We will start on a fresh set of {self.compoundStrategy.get(1)[0]} \n\n"\
+                       f"Here is the complete scenario: {dict(sorted(self.compoundStrategy.items()))}"
         return decision_str
