@@ -63,7 +63,7 @@ class AmplTyreSolver(Solver):
         ampl.setData(df)
 
         df = amplpy.DataFrame('tyres', ['coeff', 'avg'])
-        df.setValues(racingdata.estimatedata())
+        df.setValues(racingdata.trendlinedata())
         ampl.setData(df)
         ampl.solve()
 
