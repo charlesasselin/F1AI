@@ -1,0 +1,8 @@
+reset;
+option solver gurobi;
+model f1aiTyre.mod;
+data f1aiTyre.dat;
+solve;
+display compound;
+display pit;
+
