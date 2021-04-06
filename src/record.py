@@ -67,7 +67,7 @@ if __name__ == "__main__":
             if lastLapNum not in lapTimes.keys():
                 current_lap = lastLapNum + 1
                 lapTimes[lastLapNum] = LapTime(seconds=lapData.lastLapTime)
-                listLapTimes.append(LapTime(seconds=lapData.lastLapTime).getseconds())
+                listLapTimes.append(lapTimes[lastLapNum].getseconds())
                 totalLaps = f1packets.PacketSessionData_V1.totalLaps
                 file1.write(f'{listLapTimes}\n')
                 print(lapTimes)
