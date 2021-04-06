@@ -15,4 +15,4 @@ En collaboration:
 # Description du prototype #
 Le prototype de SIAD a été développé dans le cadre du cours MQR-2100. C'est un programme linéaire qui permet de calculer et planifier  les moments et la fréquence auxquels les bolides s'arrês afin de maximiser la qualité du matériel fourni lors d'une cours de formule 1
 
-# 
+# Installation #
