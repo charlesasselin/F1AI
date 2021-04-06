@@ -1,9 +1,9 @@
 set tyres;
 set laps;
 set stints;
-param tyreLifeSpan := 19;
-param totalLaps := 31;
-param pitTime := 17;
+param tyreLifeSpan;
+param totalLaps;
+param pitTime;
 param usage{c in tyres, s in stints};
 param avg{c in tyres};
 param coeff{c in tyres};

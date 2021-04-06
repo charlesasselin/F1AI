@@ -57,10 +57,13 @@ class AmplTyreSolver(Solver):
         df = amplpy.DataFrame(('tyres', 'wear'), 'usage')
 
         df.setValues({
-            (tyre, wear): racingdata.lapData[i][j]
+            (tyre, wear): racingdata.tyreUsageData[i][j]
             for i, tyre in enumerate(listtyres)
             for j, wear in enumerate(listwear)})
+        ampl.setData(df)
 
+        df = amplpy.DataFrame('tyres', ['coeff', 'avg'])
+        df.setValues(racingdata.estimatedata())
         ampl.setData(df)
         ampl.solve()
 
