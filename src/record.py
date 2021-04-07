@@ -76,7 +76,7 @@ if __name__ == "__main__":
             lastLapNum = currentLapNum - 1
             if lastLapNum not in lapTimes.keys():
                 lapTimes[lastLapNum] = LapTime(seconds=lapData.lastLapTime)
-                listLapTimes.append(lapTimes[lastLapNum].getseconds())
+                listLapTimes.append(format(lapTimes[lastLapNum].getseconds(), '.3f'))
                 print(listLapTimes)
             else:
                 pass
@@ -92,16 +92,15 @@ if __name__ == "__main__":
                 print(lapCompound[lastLapNum])
                 for compound in data['compounds']:
                     if lapCompound[lastLapNum] == compound:
-                        data['laptimes'][data['compounds'][compound]].append(lapTimes[lastLapNum].getseconds())
+                        data['laptimes'][data['compounds'][compound]].append(format(lapTimes[lastLapNum].getseconds(), '.3f'))
                         totalTyresWear = 0
                         for i in range(4):
                             totalTyresWear += carStatusData.tyresWear[i]/100
-                        avgTyresWear = totalTyresWear/4
+                        avgTyresWear = format(totalTyresWear/4, '.3f')
                         data['tyreusage'][data['compounds'][compound]].append(avgTyresWear)
                 print(data)
                 with open('recordData', 'wb') as handle:
                     pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
         else:
             pass
-        # with open('recordData', 'wb') as handle:
-        #     pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
+

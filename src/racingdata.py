@@ -12,6 +12,7 @@ class RacingData(Data):
         self.pitTime = 17
         self.tyreUsageData = lapdata['tyreusage']
         self.totalLaps = lapdata['totallaps']
+        self.compounds = lapdata['compounds']
 
     def __str__(self):
         tmp_str = ''
@@ -20,17 +21,24 @@ class RacingData(Data):
             tmp_str = tmp_str + '\n'
         return str(tmp_str)
 
-    @staticmethod
-    def get_nb_laps():
-        # return f1.PacketSessionData_V1._fields_[5] # ('Total Laps', int)
-        imola = 50
-        return imola
+    def tyreusediff(self):
+        usediff = {}
+        for i in self.compounds.values():
+            if len(self.tyreUsageData[i]) == 0:
+                raise ValueError('no items in list')
+            a = np.array(self.tyreUsageData[i])
+            tyrediff = sum(np.diff(a))/len(self.tyreUsageData[i])
+            usediff[i] = tyrediff
+        return usediff
 
-    @staticmethod
-    def compound2021():
-        return ["Soft", "Medium", "Hard"]
 
     def trendlinedata(self):
+        self.tyreusediff()
+        it = iter(self.tyreUsageData)
+        the_len = len(next(it))
+        if not all(len(l) == the_len for l in it):
+            raise ValueError('not all lists have same length!')
+
         g1 = (self.tyreUsageData[0], self.lapData[0])
         g2 = (self.tyreUsageData[1], self.lapData[1])
         g3 = (self.tyreUsageData[2], self.lapData[2])
@@ -44,7 +52,7 @@ class RacingData(Data):
         coefficients = trendlinedata['coefficients']
         average = trendlinedata['average']
         estimate = {tyre: [coeff, avg]
-                    for tyre in self.compound2021()
+                    for tyre in self.compounds
                     for coeff in coefficients
                     for avg in average}
         return estimate

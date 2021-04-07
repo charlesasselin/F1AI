@@ -17,15 +17,12 @@ class AmplSolver(Solver):
 
         model_dir = os.path.normpath('./ampl_models/Basic3D')
         ampl.read(os.path.join(model_dir, 'f1ai.mod'))
-
-        nb_laps = racingdata.get_nb_laps()
-
-        listlaps = list(range(1, nb_laps+1))
+        listlaps = list(range(1, racingdata.totallaps + 1))
         listwear = list(range(1, (min(len(racingdata.lapData[0]),
                                       len(racingdata.lapData[1]),
                                       len(racingdata.lapData[2]))
                                   )))
-        listtyres = racingdata.compound2021()
+        listtyres = racingdata.compounds.keys()
 
         dftyres = amplpy.DataFrame('tyres')
         dftyres.setColumn('tyres', listtyres)
@@ -40,7 +37,7 @@ class AmplSolver(Solver):
         ampl.setData(dflaps, 'laps')
 
         totallaps = ampl.getParameter('totalLaps')
-        totallaps.set(nb_laps)
+        totallaps.set(racingdata.totalLaps)
 
         tyrelifespan = ampl.getParameter('tyreLifeSpan')
         tyrelifespan.set(len(listwear))

@@ -18,14 +18,12 @@ class AmplTrendlineSolver(Solver):
         model_dir = os.path.normpath('./ampl_models/Trend3D')
         ampl.read(os.path.join(model_dir, 'f1aiTyre.mod'))
 
-        nb_laps = racingdata.get_nb_laps()
-
-        listlaps = list(range(1, nb_laps + 1))
+        listlaps = list(range(1, racingdata.totalLaps + 1))
         listwear = list(range(1, (min(len(racingdata.lapData[0]),
                                       len(racingdata.lapData[1]),
                                       len(racingdata.lapData[2]))
                                   )))
-        listtyres = racingdata.compound2021()
+        listtyres = racingdata.compounds.keys()
 
         dftyres = amplpy.DataFrame('tyres')
         dftyres.setColumn('tyres', listtyres)
@@ -40,7 +38,7 @@ class AmplTrendlineSolver(Solver):
         ampl.setData(dflaps, 'laps')
 
         totallaps = ampl.getParameter('totalLaps')
-        totallaps.set(nb_laps)
+        totallaps.set(racingdata.totalLaps)
 
         tyrelifespan = ampl.getParameter('tyreLifeSpan')
         tyrelifespan.set(len(listwear))
