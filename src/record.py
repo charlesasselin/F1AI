@@ -2,6 +2,7 @@ from f1_2020_telemetry.packets import unpack_udp_packet
 from f1_2020_telemetry import packets as f1packets
 import socket
 from dataclasses import dataclass
+import pickle
 
 
 @dataclass
@@ -26,18 +27,21 @@ class Tyre:
     def __repr__(self):
         return self.tyretype
 
+    def __eq__(self, other):
+        return other == self.tyretype
+
     @property
     def tyretype(self):
         if self.compound == 16:
-            return 'C5'
+            return 'Soft'
         elif self.compound == 17:
-            return 'C4'
+            return 'Soft'
         elif self.compound == 18:
-            return 'C3'
+            return 'Medium'
         elif self.compound == 19:
-            return 'C2'
+            return 'Hard'
         elif self.compound == 20:
-            return 'C1'
+            return 'Hard'
 
 
 if __name__ == "__main__":
@@ -48,41 +52,56 @@ if __name__ == "__main__":
     lapTimes = {}
     listLapTimes = []
     lapCompound = {}
-    file1 = open("lapData", "a")
-    current_lap = 0
-
+    appendix = {0: 'Melbourne', 1: 'Paul Ricard', 2: 'Shanghai', 3: 'Sakhir (Bahrain)',
+                4: 'Catalunya', 5: 'Monaco', 6: 'Montreal', 7: 'Silverstone',
+                8: 'Hockenheim', 9: 'Hungaroring', 10: 'Spa', 11: 'Monza',
+                12: 'Singapore', 13: 'Suzuka', 14: 'Abu Dhabi', 15: 'Texas',
+                16: 'Brazil', 17: 'Austria', 18: 'Sochi', 19: 'Mexico',
+                20: 'Baku (Azerbaijan)', 21: 'Sakhir Short', 22: 'Silverstone Short', 23: 'Texas Short',
+                24: 'Suzuka Short', 25: 'Hanoi', 26: 'Zandvoort'}
+    data = {'laptimes': [[], [], []],
+            'tyreusage': [[], [], []],
+            'compounds': {'Soft': 0, 'Medium': 1, 'Hard': 2}}
+    currentLapNum = 1
+    lastLapNum = 0
     while True:
-
         udp_packet = udp_socket.recv(2048)
         packet = unpack_udp_packet(udp_packet)
         attribute = packet.header
-
-        # frame = attribute.frameIdentifier
         player_car = attribute.playerCarIndex
-        # current_frame_data[PacketID(attribute.packetId)] = packet
 
         if isinstance(packet, f1packets.PacketLapData_V1):
             lapData = packet.lapData[player_car]
-            lastLapNum = lapData.currentLapNum - 1
+            currentLapNum = lapData.currentLapNum
+            lastLapNum = currentLapNum - 1
             if lastLapNum not in lapTimes.keys():
-                current_lap = lastLapNum + 1
                 lapTimes[lastLapNum] = LapTime(seconds=lapData.lastLapTime)
                 listLapTimes.append(lapTimes[lastLapNum].getseconds())
-                totalLaps = f1packets.PacketSessionData_V1.totalLaps
-                file1.write(f'{listLapTimes}\n')
-                print(lapTimes)
-        elif isinstance(packet, f1packets.PacketSessionData_V1):
-            pass
-        elif isinstance(packet, f1packets.PacketCarStatusData_V1):
-            if current_lap - 1 not in lapCompound.keys():
-                carStatusData = packet.carStatusData[player_car]
-                lapCompound[current_lap-1] = Tyre(compound=carStatusData.actualTyreCompound)
-                file1.write(f'{lapCompound}\n')
-                print(lapCompound)
+                print(listLapTimes)
+            else:
+                pass
 
+        elif isinstance(packet, f1packets.PacketSessionData_V1):
+            data['totallaps'] = packet.totalLaps
+            data['gptitle'] = appendix[packet.trackId]
+
+        elif isinstance(packet, f1packets.PacketCarStatusData_V1):
+            if lastLapNum not in lapCompound.keys():
+                carStatusData = packet.carStatusData[player_car]
+                lapCompound[lastLapNum] = Tyre(compound=carStatusData.actualTyreCompound)
+                print(lapCompound[lastLapNum])
+                for compound in data['compounds']:
+                    if lapCompound[lastLapNum] == compound:
+                        data['laptimes'][data['compounds'][compound]].append(lapTimes[lastLapNum].getseconds())
+                        totalTyresWear = 0
+                        for i in range(4):
+                            totalTyresWear += carStatusData.tyresWear[i]/100
+                        avgTyresWear = totalTyresWear/4
+                        data['tyreusage'][data['compounds'][compound]].append(avgTyresWear)
+                print(data)
+                with open('recordData', 'wb') as handle:
+                    pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
         else:
             pass
-
-            # distance = current_frame_data[PacketID.LAP_DATA].lapData[player_car].totalDistance # THIS WORKS
-            # lap = current_frame_data[PacketID.SESSION]  # THIS DOES NOT WORK HOW DO I ACCESS totalLaps?
-            # print("Received:", frame, player_car, distance, lap)
+        # with open('recordData', 'wb') as handle:
+        #     pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)

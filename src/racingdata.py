@@ -11,6 +11,7 @@ class RacingData(Data):
         self.gpTitle = lapdata['gptitle']
         self.pitTime = 17
         self.tyreUsageData = lapdata['tyreusage']
+        self.totalLaps = lapdata['totallaps']
 
     def __str__(self):
         tmp_str = ''
@@ -68,4 +69,3 @@ class RacingData(Data):
         plt.xlabel("Tyre Usage")
         plt.ylabel("Lap Times")
         return plt.show()
-

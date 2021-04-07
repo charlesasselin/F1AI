@@ -4,9 +4,9 @@ import os
 from decision import Decision
 
 
-class AmplTyreSolver(Solver):
+class AmplTrendlineSolver(Solver):
     def __init__(self):
-        super(AmplTyreSolver, self).__init__()
+        super(AmplTrendlineSolver, self).__init__()
 
     @staticmethod
     def solve(racingdata):
@@ -14,14 +14,8 @@ class AmplTyreSolver(Solver):
         ampl = amplpy.AMPL(ampl_env)
 
         ampl.setOption('solver', 'gurobi')
-        ampl.setOption('gurobi_options',
-                       "mipfocus 1"
-                       "relax 0"
-                       "timelim 7200 "
-                       "tunetimelimit 60 "
-                       )
 
-        model_dir = os.path.normpath('./ampl_models')
+        model_dir = os.path.normpath('./ampl_models/Trend3D')
         ampl.read(os.path.join(model_dir, 'f1aiTyre.mod'))
 
         nb_laps = racingdata.get_nb_laps()
