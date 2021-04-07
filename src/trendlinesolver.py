@@ -23,7 +23,7 @@ class AmplTrendlineSolver(Solver):
                                       len(racingdata.lapData[1]),
                                       len(racingdata.lapData[2]))
                                   )))
-        listtyres = racingdata.compounds.keys()
+        listtyres = racingdata.compounds.values()
 
         dftyres = amplpy.DataFrame('tyres')
         dftyres.setColumn('tyres', listtyres)
@@ -49,7 +49,7 @@ class AmplTrendlineSolver(Solver):
         df = amplpy.DataFrame(('tyres', 'wear'), 'usage')
 
         df.setValues({
-            (tyre, wear): racingdata.tyreUsageData[i][j]
+            (tyre, wear): racingdata.futureTyreUsageData[i][j]
             for i, tyre in enumerate(listtyres)
             for j, wear in enumerate(listwear)})
         ampl.setData(df)

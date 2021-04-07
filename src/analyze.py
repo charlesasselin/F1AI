@@ -14,7 +14,7 @@ data = {'laptimes': [[69.165, 69.712, 70.309, 70.148, 69.352, 70.695, 70.408, 70
                       [0, 0.03, 0.06, 0.09, 0.12, 0.15, 0.18, 0.21, 0.24, 0.27, 0.30, 0.33, 0.36, 0.39, 0.42, 0.45, 0.48, 0.51, 0.54]],
         'totallaps': 50,
         'gptitle': 'Imola Grand Prix',
-        'compounds': {'Soft': 0, 'Medium': 1, 'Hard': 2}}
+        'compounds': {0: 'Soft', 1: 'Medium', 2: 'Hard'}}
 
 # with open('recordData', 'rb') as handle:
 #     data = pickle.load(handle)
@@ -23,6 +23,7 @@ data = {'laptimes': [[69.165, 69.712, 70.309, 70.148, 69.352, 70.695, 70.408, 70
 if __name__ == "__main__":
     racing_inst = RacingData(data)
     RacingData.trendlinedata(racing_inst)
+    RacingData.appendlists(racing_inst)
     racing_sol = AmplTrendlineSolver().solve(racing_inst)
     #racing_sol = AmplSolver().solve(racing_inst)
     print(racing_sol)

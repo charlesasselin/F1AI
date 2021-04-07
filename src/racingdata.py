@@ -1,6 +1,7 @@
 from src.data import Data
 import numpy as np
 import matplotlib.pyplot as plt
+import copy
 
 
 class RacingData(Data):
@@ -8,9 +9,11 @@ class RacingData(Data):
     def __init__(self, lapdata):
         super(RacingData, self).__init__()
         self.lapData = lapdata['laptimes']
+        self.futureLapData = copy.deepcopy(self.lapData)
         self.gpTitle = lapdata['gptitle']
         self.pitTime = 17
         self.tyreUsageData = lapdata['tyreusage']
+        self.futureTyreUsageData = copy.deepcopy(self.tyreUsageData)
         self.totalLaps = lapdata['totallaps']
         self.compounds = lapdata['compounds']
 
@@ -23,7 +26,7 @@ class RacingData(Data):
 
     def tyreusediff(self):
         usediff = {}
-        for i in self.compounds.values():
+        for i in self.compounds.keys():
             if len(self.tyreUsageData[i]) == 0:
                 raise ValueError('no items in list')
             a = np.array(self.tyreUsageData[i])
@@ -31,14 +34,7 @@ class RacingData(Data):
             usediff[i] = tyrediff
         return usediff
 
-
     def trendlinedata(self):
-        self.tyreusediff()
-        it = iter(self.tyreUsageData)
-        the_len = len(next(it))
-        if not all(len(l) == the_len for l in it):
-            raise ValueError('not all lists have same length!')
-
         g1 = (self.tyreUsageData[0], self.lapData[0])
         g2 = (self.tyreUsageData[1], self.lapData[1])
         g3 = (self.tyreUsageData[2], self.lapData[2])
@@ -52,10 +48,25 @@ class RacingData(Data):
         coefficients = trendlinedata['coefficients']
         average = trendlinedata['average']
         estimate = {tyre: [coeff, avg]
-                    for tyre in self.compounds
+                    for tyre in self.compounds.values()
                     for coeff in coefficients
                     for avg in average}
         return estimate
+
+    def appendlists(self):
+        it = iter(self.tyreUsageData)
+        the_len = len(next(it))
+        maxlen = max(len(l) for l in self.tyreUsageData)
+        print(maxlen)
+        if not all(len(l) == the_len for l in it):
+            for i, l in enumerate(self.tyreUsageData):
+                missinglaps = maxlen - len(l)
+                while missinglaps != 0:
+                    self.futureTyreUsageData[i].append(self.futureTyreUsageData[i][-1] + self.tyreusediff()[i])
+                    self.futureLapData[i].append(self.futureTyreUsageData[i][-1]
+                                                 * self.trendlinedata()[self.compounds[i]][0]
+                                                 + self.trendlinedata()[self.compounds[i]][1])
+                    missinglaps -= 1
 
     def plotdata(self):
         g1 = (self.tyreUsageData[0], self.lapData[0])

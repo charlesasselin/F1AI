@@ -22,7 +22,7 @@ class AmplSolver(Solver):
                                       len(racingdata.lapData[1]),
                                       len(racingdata.lapData[2]))
                                   )))
-        listtyres = racingdata.compounds.keys()
+        listtyres = racingdata.compounds.values()
 
         dftyres = amplpy.DataFrame('tyres')
         dftyres.setColumn('tyres', listtyres)

@@ -4,9 +4,12 @@ import socket
 from dataclasses import dataclass
 import pickle
 
+@dataclass
+class LapStatus:
+    pass
 
 @dataclass
-class LapTime:
+class LapTime(LapStatus):
     seconds: float
 
     def __repr__(self):
@@ -21,7 +24,7 @@ class LapTime:
 
 
 @dataclass
-class Tyre:
+class Tyre(LapStatus):
     compound: int
 
     def __repr__(self):
@@ -61,7 +64,7 @@ if __name__ == "__main__":
                 24: 'Suzuka Short', 25: 'Hanoi', 26: 'Zandvoort'}
     data = {'laptimes': [[], [], []],
             'tyreusage': [[], [], []],
-            'compounds': {'Soft': 0, 'Medium': 1, 'Hard': 2}}
+            'compounds': {0: 'Soft', 1: 'Medium', 2: 'Hard'}}
     currentLapNum = 1
     lastLapNum = 0
     while True:
