@@ -82,4 +82,4 @@ class RacingData(Data):
         plt.legend(loc="best", labelspacing=0.5, borderpad=0.2, handletextpad=0.05)
         plt.xlabel("Tyre Usage")
         plt.ylabel("Lap Times")
-        return plt.show()
+        plt.savefig('figure1.png')

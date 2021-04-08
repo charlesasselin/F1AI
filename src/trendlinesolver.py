@@ -53,7 +53,6 @@ class AmplTrendlineSolver(Solver):
             for i, tyre in enumerate(listtyres)
             for j, wear in enumerate(listwear)})
         ampl.setData(df)
-        print(racingdata.trendlinedata())
         df = amplpy.DataFrame('tyres', ['avg', 'coeff'])
         df.setValues(racingdata.trendlinedata())
         ampl.setData(df)

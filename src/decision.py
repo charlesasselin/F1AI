@@ -27,7 +27,7 @@ class Decision(Solution):
                            f"Second pit is at lap {pitlaps[1]} " \
                            f"for a {self.compoundStrategy.get(pitlaps[1] + 1)[0]} compound.\n" \
                            f"We will start on a fresh set of {self.compoundStrategy.get(1)[0]}. \n\n" \
-                           f"It should take {record.LapTime(self.totalTime)} minutes."
+                           f"It should take {record.LapTime(self.totalTime)} minutes.\n\n"
 
             return decision_str
 

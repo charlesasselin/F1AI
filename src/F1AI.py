@@ -4,17 +4,19 @@ import tkinter.font as tkFont
 from PIL import Image, ImageTk
 from record import Recorder as rec
 from analyze import Analyzer as ana
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import os
+from racingdata import RacingData
 
 root = tk.Tk()
 root.title("Aston Martin Cognizant F1AI")
 
 author = tk.Label(root, text='Author: Charles Asselin\n'
                              'License: 111 267 783\n'
-                             'Version 3.5.1', anchor='w', justify=tk.LEFT, bg='#F596C8', fg='black')
+                             'Version 3.5.2', anchor='w', justify=tk.LEFT, bg='#F596C8', fg='black')
 author.pack(fill='both')
 
-canvas = tk.Canvas(root, height=700, width=700, bg="#006F62")
+canvas = tk.Canvas(root, height=1000, width=700, bg="#006F62")
 canvas.pack()
 
 frame = tk.Frame(root, bg="#006F62")
@@ -36,17 +38,15 @@ filename = []
 solvers = ["Trendline Solver", "Basic Solver"]
 
 def openfile():
-    file = filedialog.askopenfilename(initialdir=os.getcwd(), title='Select File',)
-    print(file)
+    file = filedialog.askopenfilename(initialdir=os.getcwd(), title='Select File',
+                                      filetypes=[('yaml', '*.yaml')])
     filename.append(os.path.split(file)[1])
-    print(filename)
 
 def recordcommand():
     rec().record()
 
 def analyzecommand():
     handle = filename[0]
-    print(handle)
     if len(filename) == 0:
         raise ValueError('No data files have been selected')
     analyzer = ana(filename[0], variable.get())
@@ -54,8 +54,15 @@ def analyzecommand():
     label = tk.Label(frame, text=str(analyzer), bg="#006F62", fg='white', font=fontStyle)
     label.pack()
 
+    analyzer.plotter()
+    figure = ImageTk.PhotoImage(Image.open('figure1.png').resize((basewidth, hsize), Image.ANTIALIAS))
+    panel = tk.Label(frame, image=figure)
+    panel.photo = figure
+    panel.pack(side=tk.TOP)
+
 def change_dropdown(*args):
     print(variable.get())
+
 
 variable = tk.StringVar(frame)
 variable.set(solvers[0])
