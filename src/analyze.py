@@ -24,21 +24,23 @@ class Analyzer:
         self.handle = handle
         self.data = {}
         self.solver = solver
+        self.racingsol = None
+
+    def __str__(self):
+        return str(self.racingsol)
 
     def analyze(self):
         with open(self.handle, 'rb') as handle:
             self.data = pickle.load(handle)
         racing_inst = RacingData(self.data)
         RacingData.appendlists(racing_inst)
-        if self.solver == 'trendline':
-            racing_sol = AmplTrendlineSolver().solve(racing_inst)
-            racing_sol.evaluate()
-            print(racing_sol)
+        if self.solver == 'Trendline Solver':
+            self.racingsol = AmplTrendlineSolver().solve(racing_inst)
+            self.racingsol.evaluate()
             RacingData.plotdata(racing_inst)
-        elif self.solver == 'basic':
-            racing_sol = AmplSolver().solve(racing_inst)
-            racing_sol.evaluate()
-            print(racing_sol)
+        elif self.solver == 'Basic Solver':
+            self.racing_sol = AmplSolver().solve(racing_inst)
+            self.racing_sol.evaluate()
             RacingData.plotdata(racing_inst)
 
 

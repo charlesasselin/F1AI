@@ -1,4 +1,5 @@
 from solution import Solution
+import record
 
 
 class Decision(Solution):
@@ -17,8 +18,7 @@ class Decision(Solution):
             decision_str = f"\nLance, the pit strategy for this {self.gpTitle} " \
                            f"is the following:\nFirst pit is at lap {pitlaps[0]} " \
                            f"for a {self.compoundStrategy.get(pitlaps[0]+1)[0]} compound.\n"\
-                           f"We will start on a fresh set of {self.compoundStrategy.get(1)[0]} \n\n"\
-                           f"Here is the complete scenario: {dict(sorted(self.compoundStrategy.items()))}"
+                           f"We will start on a fresh set of {self.compoundStrategy.get(1)[0]} \n\n"
             return decision_str
         elif len(pitlaps) == 2:
             decision_str = f"\nLance, the pit strategy for this {self.gpTitle} " \
@@ -27,8 +27,7 @@ class Decision(Solution):
                            f"Second pit is at lap {pitlaps[1]} " \
                            f"for a {self.compoundStrategy.get(pitlaps[1] + 1)[0]} compound.\n" \
                            f"We will start on a fresh set of {self.compoundStrategy.get(1)[0]}. \n\n" \
-                           f"Here is the complete scenario: {dict(sorted(self.compoundStrategy.items()))}\n\n" \
-                           f"It should take {self.totalTime} seconds."
+                           f"It should take {record.LapTime(self.totalTime)} minutes."
 
             return decision_str
 
