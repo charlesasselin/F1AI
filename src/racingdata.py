@@ -45,30 +45,28 @@ class RacingData(Data):
             z = np.polyfit(x, y, 1)
             eq = [z[1], z[0]]
             equation.append(eq)
-        estimate = {tyre: eq
-                    for tyre in self.compounds.values()
-                    for eq in equation}
+        estimate = {tyre: eq for tyre, eq in zip(self.compounds.values(), equation)}
         return estimate
 
     def appendlists(self):
         it = iter(self.tyreUsageData)
         the_len = len(next(it))
         maxlen = max(len(l) for l in self.tyreUsageData)
-        print(maxlen)
         if not all(len(l) == the_len for l in it):
             for i, l in enumerate(self.tyreUsageData):
                 missinglaps = maxlen - len(l)
+                tyre = self.compounds[i]
+                coeff = self.trendlinedata()[tyre][1]
+                avg = self.trendlinedata()[tyre][0]
                 while missinglaps != 0:
                     self.futureTyreUsageData[i].append(self.futureTyreUsageData[i][-1] + self.tyreusediff()[i])
-                    self.futureLapData[i].append(self.futureTyreUsageData[i][-1]
-                                                 * self.trendlinedata()[self.compounds[i]][0]
-                                                 + self.trendlinedata()[self.compounds[i]][1])
+                    self.futureLapData[i].append(self.futureTyreUsageData[i][-1] * coeff + avg)
                     missinglaps -= 1
 
     def plotdata(self):
-        g1 = (self.tyreUsageData[0], self.lapData[0])
-        g2 = (self.tyreUsageData[1], self.lapData[1])
-        g3 = (self.tyreUsageData[2], self.lapData[2])
+        g1 = (self.futureTyreUsageData[0], self.futureLapData[0])
+        g2 = (self.futureTyreUsageData[1], self.futureLapData[1])
+        g3 = (self.futureTyreUsageData[2], self.futureLapData[2])
         data = (g1, g2, g3)
         colors = ("red", "blue", "black")
         groups = ("Soft", "Medium", "Hard")
