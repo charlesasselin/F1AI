@@ -17,7 +17,7 @@ class AmplSolver(Solver):
 
         model_dir = os.path.normpath('./ampl_models/Basic3D')
         ampl.read(os.path.join(model_dir, 'f1ai.mod'))
-        listlaps = list(range(1, racingdata.totallaps + 1))
+        listlaps = list(range(1, racingdata.totalLaps + 1))
         listwear = list(range(1, (min(len(racingdata.lapData[0]),
                                       len(racingdata.lapData[1]),
                                       len(racingdata.lapData[2]))
@@ -48,7 +48,7 @@ class AmplSolver(Solver):
         df = amplpy.DataFrame(('tyres', 'wear'), 'time')
 
         df.setValues({
-            (tyre, wear): racingdata.lapData[i][j]
+            (tyre, wear): racingdata.futureLapData[i][j]
             for i, tyre in enumerate(listtyres)
             for j, wear in enumerate(listwear)})
 
@@ -62,6 +62,7 @@ class AmplSolver(Solver):
         chosen = {int(row[1]): row[0] for row in dfpit if row[2] == 1}
 
         solution.pitDecision = chosen
+        solution.lapTimes = racingdata.futureLapData
 
         compound = ampl.getVariable('compound')
         dfcompound = compound.getValues()

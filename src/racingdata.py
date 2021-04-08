@@ -39,18 +39,15 @@ class RacingData(Data):
         g2 = (self.tyreUsageData[1], self.lapData[1])
         g3 = (self.tyreUsageData[2], self.lapData[2])
         data = (g1, g2, g3)
-        trendlinedata = {'coefficients': [], 'average': []}
+        equation = []
         for data in data:
             x, y = data
             z = np.polyfit(x, y, 1)
-            trendlinedata['coefficients'].append(z[1])
-            trendlinedata['average'].append(z[0])
-        coefficients = trendlinedata['coefficients']
-        average = trendlinedata['average']
-        estimate = {tyre: [coeff, avg]
+            eq = [z[1], z[0]]
+            equation.append(eq)
+        estimate = {tyre: eq
                     for tyre in self.compounds.values()
-                    for coeff in coefficients
-                    for avg in average}
+                    for eq in equation}
         return estimate
 
     def appendlists(self):

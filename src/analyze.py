@@ -22,9 +22,9 @@ data = {'laptimes': [[69.165, 69.712, 70.309, 70.148, 69.352, 70.695, 70.408, 70
 
 if __name__ == "__main__":
     racing_inst = RacingData(data)
-    RacingData.trendlinedata(racing_inst)
     RacingData.appendlists(racing_inst)
-    racing_sol = AmplTrendlineSolver().solve(racing_inst)
-    #racing_sol = AmplSolver().solve(racing_inst)
+    #racing_sol = AmplTrendlineSolver().solve(racing_inst)
+    racing_sol = AmplSolver().solve(racing_inst)
+    racing_sol.evaluate()
     print(racing_sol)
     RacingData.plotdata(racing_inst)

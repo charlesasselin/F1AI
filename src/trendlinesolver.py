@@ -21,7 +21,7 @@ class AmplTrendlineSolver(Solver):
         listlaps = list(range(1, racingdata.totalLaps + 1))
         listwear = list(range(1, (min(len(racingdata.lapData[0]),
                                       len(racingdata.lapData[1]),
-                                      len(racingdata.lapData[2]))
+                                      len(racingdata.lapData[2]))+1
                                   )))
         listtyres = racingdata.compounds.values()
 
@@ -53,8 +53,8 @@ class AmplTrendlineSolver(Solver):
             for i, tyre in enumerate(listtyres)
             for j, wear in enumerate(listwear)})
         ampl.setData(df)
-
-        df = amplpy.DataFrame('tyres', ['coeff', 'avg'])
+        print(racingdata.trendlinedata())
+        df = amplpy.DataFrame('tyres', ['avg', 'coeff'])
         df.setValues(racingdata.trendlinedata())
         ampl.setData(df)
         ampl.solve()
@@ -72,4 +72,10 @@ class AmplTrendlineSolver(Solver):
         chosen = {int(row[2]): [row[0], int(row[1])] for row in dfcompound if row[3] == 1}
         solution.compoundStrategy = chosen
 
+        time = ampl.getVariable('time')
+        dftime = time.getValues()
+        for row in dftime:
+            for k, v in racingdata.compounds.items():
+                if v == row[0]:
+                    solution.lapTimes[k].append(row[2])
         return solution
