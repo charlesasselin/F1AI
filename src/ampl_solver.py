@@ -14,6 +14,12 @@ class AmplSolver(Solver):
         ampl = amplpy.AMPL(ampl_env)
 
         ampl.setOption('solver', 'gurobi')
+        ampl.setOption('gurobi_options',
+                       "mipfocus 1"
+                       "relax 0"
+                       "timelim 7200 "
+                       "tunetimelimit 60 "
+                       )
 
         model_dir = os.path.normpath('./ampl_models/Basic3D')
         ampl.read(os.path.join(model_dir, 'f1ai.mod'))

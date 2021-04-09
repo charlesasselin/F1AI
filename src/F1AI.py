@@ -4,16 +4,14 @@ import tkinter.font as tkFont
 from PIL import Image, ImageTk
 from record import Recorder as rec
 from analyze import Analyzer as ana
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import os
-from racingdata import RacingData
 
 root = tk.Tk()
 root.title("Aston Martin Cognizant F1AI")
 
 author = tk.Label(root, text='Author: Charles Asselin\n'
                              'License: 111 267 783\n'
-                             'Version 3.5.2', anchor='w', justify=tk.LEFT, bg='#F596C8', fg='black')
+                             'Version 3.5.3', anchor='w', justify=tk.LEFT, bg='#F596C8', fg='black')
 author.pack(fill='both')
 
 canvas = tk.Canvas(root, height=1000, width=700, bg="#006F62")

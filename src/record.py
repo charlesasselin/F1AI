@@ -114,15 +114,15 @@ class Recorder:
                         print(self.lapCompound[lastLapNum])
                         for index, compound in self.data['compounds'].items():
                             if self.lapCompound[lastLapNum] == compound:
-                                self.data['laptimes'][index].append(format(self.lapTimes[lastLapNum].getseconds(), '.3f'))
-                                self.data['fuelintank'][index].append(format(carStatusData.fuelInTank, '.1f'))
+                                self.data['laptimes'][index].append(format(round(self.lapTimes[lastLapNum].getseconds(), 3)))
+                                self.data['fuelintank'][index].append(format(round(carStatusData.fuelInTank, 1)))
                                 totalTyresWear = 0
                                 for i in range(4):
                                     totalTyresWear += carStatusData.tyresWear[i] / 100
-                                avgTyresWear = format(totalTyresWear / 4, '.2f')
+                                avgTyresWear = format(round(totalTyresWear / 4, 2))
                                 self.data['tyreusage'][index].append(avgTyresWear)
                         print(self.data)
-                        with open('AustriaRecordData.yaml', 'w') as handle:
+                        with open('MonzaRecordData.yaml', 'w') as handle:
                             yaml.dump(self.data, handle, default_flow_style=False)
 
             else:
