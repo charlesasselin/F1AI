@@ -33,15 +33,18 @@ class Decision(Solution):
             return decision_str
 
     def validate(self):
-        pass
+        return self.compoundStrategy != self.racingData.totalLaps
 
     def evaluate(self):
-        compounds = self.racingData.compounds
-        for lap in self.compoundStrategy.keys():
-            tyre = self.compoundStrategy[lap][0]
-            usage = self.compoundStrategy[lap][1]
-            for k, v in compounds.items():
-                if v == tyre:
-                    laptime = self.lapTimes[k][usage-1]
-                    self.totalTime += laptime
-        self.totalTime += len(sorted(list(self.pitDecision.keys()))) * self.racingData.pitTime
+        if self.validate() is True:
+            compounds = self.racingData.compounds
+            for lap in self.compoundStrategy.keys():
+                tyre = self.compoundStrategy[lap][0]
+                usage = self.compoundStrategy[lap][1]
+                for k, v in compounds.items():
+                    if v == tyre:
+                        laptime = self.lapTimes[k][usage-1]
+                        self.totalTime += laptime
+            self.totalTime += len(sorted(list(self.pitDecision.keys()))) * self.racingData.pitTime
+        else:
+            raise ValueError('The strategy is not conform to the number of laps in the Grand Prix')

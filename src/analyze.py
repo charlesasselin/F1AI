@@ -6,6 +6,7 @@ from ampl_solver import AmplSolver
 from trendlinesolver import AmplTrendlineSolver
 import json
 import yaml
+from test_main import MyTestCase as test
 
 data = {"laptimes": [[69.165, 69.712, 70.309, 70.148, 69.352, 70.695, 70.408, 70.485, 70.107, 69.881, 70.344, 69.786, 70.267, 70.335, 70.373, 70.071, 70.698, 70.109, 71.897],
                      [67.964, 67.921, 67.426, 68.536, 68.548, 68.428, 69.302, 68.015, 68.522, 68.568, 68.729, 68.234, 68.158, 68.113, 68.331, 68.334, 69.023, 68.638, 67.576],
@@ -35,6 +36,7 @@ class Analyzer:
             self.data = yaml.load(handle, Loader=yaml.FullLoader)
         racing_inst = RacingData(self.data)
         RacingData.appendlists(racing_inst)
+        test(racing_inst)
         if self.solver == 'Trendline Solver':
             self.racingsol = AmplTrendlineSolver().solve(racing_inst)
             self.racingsol.evaluate()
