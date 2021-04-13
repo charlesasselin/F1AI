@@ -11,7 +11,7 @@ root.title("Aston Martin Cognizant F1AI")
 
 author = tk.Label(root, text='Author: Charles Asselin\n'
                              'License: 111 267 783\n'
-                             'Version 3.5.4', anchor='w', justify=tk.LEFT, bg='#F596C8', fg='black')
+                             'Version 4.0', anchor='w', justify=tk.LEFT, bg='#F596C8', fg='black')
 author.pack(fill='both')
 
 canvas = tk.Canvas(root, height=1000, width=700, bg="#006F62")
@@ -33,7 +33,7 @@ logolabel.image = logo
 logolabel.pack(side=tk.TOP)
 
 filename = []
-solvers = ["Trendline Solver", "Basic Solver"]
+solvers = ["Trendline Solver", "Basic Solver", "Complete 3D Solver"]
 
 def openfile():
     file = filedialog.askopenfilename(initialdir=os.getcwd(), title='Select File',
@@ -51,9 +51,11 @@ def analyzecommand():
     analyzer.analyze()
     label = tk.Label(frame, text=str(analyzer), bg="#006F62", fg='white', font=fontStyle)
     label.pack()
-
     analyzer.plotter()
-    figure = ImageTk.PhotoImage(Image.open('figure1.png').resize((basewidth, hsize), Image.ANTIALIAS))
+    if variable.get() == 'Complete 3D Solver':
+        figure = ImageTk.PhotoImage(Image.open('figure2.png').resize((basewidth, hsize), Image.ANTIALIAS))
+    else:
+        figure = ImageTk.PhotoImage(Image.open('figure1.png').resize((basewidth, hsize), Image.ANTIALIAS))
     panel = tk.Label(frame, image=figure)
     panel.photo = figure
     panel.pack(side=tk.TOP)

@@ -11,26 +11,27 @@ class Decision(Solution):
         self.compoundStrategy = {}
         self.totalTime: int = 0
         self.lapTimes = [[], [], []]
+        self.fuel = 0
 
     def __str__(self):
         pitlaps = sorted(list(self.pitDecision.keys()))
-        if len(pitlaps) == 1:
-            decision_str = f"\nLance, the pit strategy for this {self.gpTitle} " \
-                           f"is the following:\nFirst pit is at lap {pitlaps[0]} " \
-                           f"for a {self.compoundStrategy.get(pitlaps[0]+1)[0]} compound.\n"\
-                           f"We will start on a fresh set of {self.compoundStrategy.get(1)[0]} \n\n"\
-                           f"It should take {record.LapTime(self.totalTime)} minutes.\n\n"
-            return decision_str
-        elif len(pitlaps) == 2:
-            decision_str = f"\nLance, the pit strategy for this {self.gpTitle} " \
-                           f"is the following:\nFirst pit is at lap {pitlaps[0]} " \
-                           f"for a {self.compoundStrategy.get(pitlaps[0] + 1)[0]} compound.\n" \
-                           f"Second pit is at lap {pitlaps[1]} " \
-                           f"for a {self.compoundStrategy.get(pitlaps[1] + 1)[0]} compound.\n" \
-                           f"We will start on a fresh set of {self.compoundStrategy.get(1)[0]}. \n\n" \
-                           f"It should take {record.LapTime(self.totalTime)} minutes.\n\n"
+        decision_str = f"\nLance, the pit strategy for this {self.gpTitle} " \
+                       f"is the following:\nFirst pit is at lap {pitlaps[0]} " \
+                       f"for a {self.compoundStrategy.get(pitlaps[0] + 1)[0]} compound.\n"
 
-            return decision_str
+        if len(pitlaps) == 2:
+            add = f"Second pit is at lap {pitlaps[1]} " \
+                  f"for a {self.compoundStrategy.get(pitlaps[1] + 1)[0]} compound.\n"
+            decision_str += add
+
+        add = f"We will start on a fresh set of {self.compoundStrategy.get(1)[0]} \n\n" \
+              f"It should take {record.LapTime(self.totalTime)} minutes.\n\n"
+        decision_str += add
+
+        if self.fuel != 0:
+            add = f"We should fill {self.fuel}L of fuel in the tank so that we end with a surplus of 0.5L"
+            decision_str += add
+        return decision_str
 
     def validate(self):
         return self.compoundStrategy != self.racingData.totalLaps

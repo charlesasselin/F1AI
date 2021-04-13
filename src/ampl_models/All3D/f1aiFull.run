@@ -1,0 +1,8 @@
+reset;
+option solver gurobi;
+model f1aiFull.mod;
+data f1aiFull.dat;
+solve;
+display compound;
+display pit;
+
