@@ -11,7 +11,7 @@ root.title("Aston Martin Cognizant F1AI")
 
 author = tk.Label(root, text='Author: Charles Asselin\n'
                              'License: 111 267 783\n'
-                             'Version 4.0', anchor='w', justify=tk.LEFT, bg='#F596C8', fg='black')
+                             'Version 4.1', anchor='w', justify=tk.LEFT, bg='#F596C8', fg='black')
 author.pack(fill='both')
 
 canvas = tk.Canvas(root, height=1000, width=700, bg="#006F62")
@@ -44,10 +44,10 @@ def recordcommand():
     rec().record()
 
 def analyzecommand():
-    handle = filename[0]
+    handle = filename[-1]
     if len(filename) == 0:
         raise ValueError('No data files have been selected')
-    analyzer = ana(filename[0], variable.get())
+    analyzer = ana(handle, variable.get())
     analyzer.analyze()
     label = tk.Label(frame, text=str(analyzer), bg="#006F62", fg='white', font=fontStyle)
     label.pack()
@@ -59,6 +59,15 @@ def analyzecommand():
     panel = tk.Label(frame, image=figure)
     panel.photo = figure
     panel.pack(side=tk.TOP)
+
+    buttonForget = tk.Button(frame, text='Click to hide Label', command=lambda: destroylabel(panel, label, buttonForget), highlightbackground="#006F62")
+    buttonForget.pack()
+
+def destroylabel(label1, label2, button):
+    label1.pack_forget()
+    label2.pack_forget()
+    button.destroy()
+
 
 def change_dropdown(*args):
     print(variable.get())
