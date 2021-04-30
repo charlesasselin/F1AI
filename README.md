@@ -40,6 +40,7 @@ Ces étapes sont à réaliser dans l'interface logiciel
 1. Dans le fichier record.py, il faut changer l'adresse IP pour celle de votre ordinateur.
 2. Dans le jeu f1 2020, il faut s'assurer que le port est bel et bien celui dans le code. Par défaut: 20777
 3. Appuyer sur le bouton Record
+
 Note: La fonction record ne fonctionne pas si votre ordinateur n'est pas connecté à un simulateur.
 
 ## Bonne course! ##
