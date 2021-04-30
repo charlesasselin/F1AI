@@ -12,7 +12,7 @@ class RacingData(Data):
         self.lapData = lapdata['laptimes']
         self.futureLapData = copy.deepcopy(self.lapData)
         self.gpTitle = lapdata['gptitle']
-        self.pitTime = 17
+        self.pitTime = lapdata['pittime']
         self.tyreUsageData = lapdata['tyreusage']
         self.futureTyreUsageData = copy.deepcopy(self.tyreUsageData)
         self.totalLaps = lapdata['totallaps']
