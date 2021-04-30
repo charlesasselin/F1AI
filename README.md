@@ -17,7 +17,7 @@ Le prototype de SIAD a été développé dans le cadre du cours MQT-2100. C'est 
 
 # Installation #
 Ce SIAD est disponible sur github: https://github.com/charlesasselin/F1AI/
-Voici les /tapes pour l'installation
+Voici les étapes pour l'installation
 1. Installer AMPL
 2. Ajouter AMPL au PATH de votre environnement de travail
 3. Installer la librairie amplpy sur l'environnement python (pip install amplpy)
