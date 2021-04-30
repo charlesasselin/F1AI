@@ -1,5 +1,6 @@
 from solution import Solution
 import record
+import sys
 
 
 class Decision(Solution):
@@ -12,6 +13,7 @@ class Decision(Solution):
         self.totalTime: int = 0
         self.lapTimes = [[], [], []]
         self.fuel = 0
+        self.countedlaps = 0
 
     def __str__(self):
         pitlaps = sorted(list(self.pitDecision.keys()))
@@ -34,18 +36,32 @@ class Decision(Solution):
         return decision_str
 
     def validate(self):
-        return self.compoundStrategy != self.racingData.totalLaps
+    # Vérifier que la stratégie est calculée en fonction du nombre de tours dans le grand prix
+        for lap in self.compoundStrategy.keys():
+            usage = self.compoundStrategy[lap][1]
+            for k, v in self.racingData.compounds.items():
+                if self.lapTimes[k][usage - 1] <= 0:
+                    return False
+        if len(self.compoundStrategy) != self.racingData.totalLaps:
+            return False
+        for tyre in self.racingData.lapData:
+            self.countedlaps += len(tyre)
+        if self.countedlaps <= self.racingData.totalLaps:
+            return False
+        return True
+
 
     def evaluate(self):
+    # Calculer la fonction objectif si la solution est validée
         if self.validate() is True:
-            compounds = self.racingData.compounds
             for lap in self.compoundStrategy.keys():
                 tyre = self.compoundStrategy[lap][0]
                 usage = self.compoundStrategy[lap][1]
-                for k, v in compounds.items():
+                for k, v in self.racingData.compounds.items():
                     if v == tyre:
                         laptime = self.lapTimes[k][usage-1]
                         self.totalTime += laptime
             self.totalTime += len(sorted(list(self.pitDecision.keys()))) * self.racingData.pitTime
         else:
-            raise ValueError('The strategy is not conform to the number of laps in the Grand Prix')
+            self.totalTime = sys.float_info.max
+        return self.totalTime

@@ -11,7 +11,7 @@ root.title("Aston Martin Cognizant F1AI")
 
 author = tk.Label(root, text='Author: Charles Asselin\n'
                              'License: 111 267 783\n'
-                             'Version 4.1', anchor='w', justify=tk.LEFT, bg='#F596C8', fg='black')
+                             'Version 4.1.1', anchor='w', justify=tk.LEFT, bg='#F596C8', fg='black')
 author.pack(fill='both')
 
 canvas = tk.Canvas(root, height=1000, width=700, bg="#006F62")
