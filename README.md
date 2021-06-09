@@ -15,6 +15,9 @@ En collaboration:
 # Description du prototype #
 Le prototype de SIAD a été développé dans le cadre du cours MQT-2100. C'est un programme linéaire qui permet de calculer et planifier  les moments et la fréquence auxquels les bolides s'arrês afin de maximiser la qualité du matériel fourni lors d'une cours de formule 1
 
+![alt text](https://drive.google.com/file/d/1-b43XkHKyVftIed6V0MJeK3PYBkG_TyS/view?usp=sharing)
+
+
 # Installation #
 Ce SIAD est disponible sur github: https://github.com/charlesasselin/F1AI/
 Voici les étapes pour l'installation
